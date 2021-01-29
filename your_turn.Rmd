@@ -7,8 +7,16 @@ output:
 ---
 
 <br>
+ Là c'est moi : 
+ 
+<center><img src="images/theo.jpg" width="350px"></center>  
 
-<center><img src="images/practicalDev_changingstuff.jpg" width="350px"></center>  
+Et là c'est mon chat méchant :
+
+<center><img src="images/IMG_2366.JPG" width="350px"></center>  
+
+
+
 
 
 Try changing a few things and reknitting a single page or rebuilding the whole site. Do your own thing, or here are a few things to try: 
