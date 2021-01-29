@@ -10,6 +10,6 @@ output:
 
 Page d'acceuil
 
-Présentation de la thèse
-
+*Intitulé*
 ----
+**Suivi sanitaire de la végétation arborée en milieu urbain à partir de séries temporelles de données de télédétection et de mesures bio-physiques in-situ : application à la ville de Rennes.**

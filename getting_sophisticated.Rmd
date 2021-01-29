@@ -6,214 +6,576 @@ output:
     toc_float: true
 ---
 
-There are a lot of ways to get sophisticated here, and we're only covering a few possibilites here. See [RStudio's R Markdown lessons](http://rmarkdown.rstudio.com/lesson-1.html) for other R Markdown capabilities. Plus, R Markdown can render styling from Cascading Style Sheets (CSS) and Hyper Text Markup Language (HTML), which is what non-R Markdown websites use.  
-
-So, Googling what you want to do and trying it in your R Markdown files is a good way to learn. Disclaimer: that's how I've learned the following, so there are most definitely better and more elegant ways to do this. But here are some ideas of what you may want to do with your website. 
-
-----
-
-## R Markdown options 
-
-These are options that you can do from the Front Matter. 
-
-<br>
-
-### Table of Contents
-
-Note that on this page: 
-
-1. there is a Table of Contents (TOC) there on the left, and 
-1. it is floating (i.e. it follows you as you scroll down and expands/collapses nicely as you click)
-1. This is all done in the front matter:  
-```
-    output:  
-      html_document:  
-        toc: true  
-        toc_float: true  
-```  
-<!---also note that my numbering in this list renders nicely--->
-
-<br>
-
-### Themes
-
-We can change the website's theme in `_site.yml`. Explore options here: <http://rmarkdown.rstudio.com/html_document_format.html#appearance_and_style>:
-
->Valid themes include "default", "cerulean", "journal", "flatly", "readable", "spacelab",  "united", "cosmo", "lumen", "paper", "sandstone", "simplex", and "yeti". 
-
-
-
-----
-
-## Simple styling
-
-
-### images
-
-By default, images are displayed left-aligned. 
-
-**Resize** an image using HTML tags (side note: check out [RStudio's R Markdown Cheatsheet](https://www.rstudio.com/resources/cheatsheets/)):
-
-Here's a big image:  
-`<img src="images/Rmd_cheatsheet.png" width="350px">`  
-<img src="images/Rmd_cheatsheet.png" width="350px">
-
-And a small image:   
-`<img src="images/Rmd_cheatsheet.png" width="150px">`  
-<img src="images/Rmd_cheatsheet.png" width="150px">
-
-  
-**Align** an image using HTML tags: 
-
-Small image centered:  
-`<center><img src="images/Rmd_cheatsheet.png" width="150px"></center>` 
-
-<center><img src="images/Rmd_cheatsheet.png" width="150px"></center>
-
-Small image right-aligned:   
-`<div align="right"><img src="images/Rmd_cheatsheet.png" width="150px"></div>`
-
-<div align="right"><img src="images/Rmd_cheatsheet.png" width="150px"></div>
-
-<br> 
-
-
-### columns
- 
-<!---From http://stackoverflow.com/questions/31753897/2-column-section-in-r-markdown:
-Put in your css file or directly in rmarkdown--->
 <style>
-  .col2 {
-    columns: 2 200px;         /* number of columns and width in pixels*/
-    -webkit-columns: 2 200px; /* chrome, safari */
-    -moz-columns: 2 200px;    /* firefox */
-  }
+.html-widget {
+    margin: auto;
+    margin-bottom: 10px;
+}
 </style>
- 
 
-<div class="col2">
-**Column 1**
-
-- note `<div class="col2">` and `</div>`
-- what beautiful bullet points
-<br>
-<br>
-
-**Column 2**
-
-- I have 3 bullet points here
-- which means to align with the left column
-- I added a `<br>` there
-</div>
-
-<br>
-
-<center>
-`<center>**Here the text is centered. Here are good resources:**</center>`  
-**Here the text is centered. Here are good resources:**
-
-• [w3schools.com - HTML references](http://www.w3schools.com/tags/) • [w3schools.com - CSS tutorial](http://www.w3schools.com/css/) • 
-</center>
-
-<br>
-
-### colored text
-
-`<font size="3" color="red">Text here!</font>`
-
-<font size="3" color="red">This is red text size 3!</font>  
-<font size="2" color="blue">This is blue text size 2!</font>  
-<font face="verdana" color="green">This is green text in verdana!</font>
-
----- 
-
-## `R` code
-
-You can execute R code each time you build your website. Even if you don't yet know R, this is a little taste of the types of things you can do. There are two ways you'll see R code; in-line and in a code chunk. This is from the [R Markdown chapter in R for Data Science](http://r4ds.had.co.nz/r-markdown.html).
-
-
-![](images/r4ds_r-markdown.png)
-
-<br>
-
-### in line
-
-Here is an example inline. The date when I last built the website is `r Sys.Date()`. My favorite number is `r pi + 10`. There are `r length(list.files())` files and folders in our repo. This is not just text; his is executable R code that is `r 10 * 10`% awesome!
-
-<br>
-
-### in a code chunk
-
-And here is an example of a code chunk. Let's plot the first bit of an `iris` variable (which is a dataset that comes with base R). 
-
-```{r plot iris}
-x <- iris$Sepal.Length[1:15]
-plot(x)
-```
-
-### calling another file 
-
-#### `R` script
-
-You can source an R script. This is a super powerful way to avoid copy-pasting your analyses. For example: 
-
-```{r source gdp script, echo=T, warning=FALSE, message=F}
-## source an external script 
-source("advanced/my_script.R")
-
-## use the calc_gdp() function `my_script.R`
-my_data <- calc_gdp(my_country <- 'Slovenia')
-
-ggplot(data = my_data, aes(x = year, y = pop)) + 
-  geom_point() + 
-  labs(title = my_data$country)
-```
-
-<br>
-
-#### A specific R script: `_site.R`
-
-This is something that R Markdown websites will look for; when it exists it will give you 'global variables' that will be available for all pages across your site.
-
-```{r _site.R, eval=FALSE, warning=FALSE, message=F}
-source("_site.R")
-```
- 
-<br>
-
-#### R Markdown file 
-
-You can insert separate R Markdown files too; text and code will be incorporated seamlessly into this page. This R Markdown file is considered the 'parent' file, and the one that is incorporated is the 'child' file. In the code chunk below, we'll say `{r, child='advanced/important_example.Rmd'}`. 
-
-```{r child, child='advanced/example.Rmd'}
-```
- 
-<br>
-
-## Troubleshooting
-
-You'll get errors as you work; this is how you learn. These are a few things you may encounter: 
-
-1. If when running `rmarkdown::render_site()` you get this error: 
-
-    ```
-    Error in object[seq_len(ile)] : 
-    object of type 'symbol' is not subsettable
-    ```
-Go to *Session > Restart R* and try again. 
-
-2. When knitting, if you get this error: 
-
-    ```
-    Error in parse_block(g[-1], g[1], params.src) : duplicate label 'setup'
-    Calls: <Anonymous> ... process_file -> split_file -> lapply -> FUN -> parse_block
-    Execution halted
-    ```
-Here you have 2 `R` code chunks named the same thing (in this case 'setup'), you must change one of them because there cannot be two code chunks with the same name.
-
-
-3. When you get an error message you don't understand: Copy-paste it into Google.
-
-<center><img src="images/practicalDev_googleErrorMessage.jpg" width="350px"></center>
+```{r setup, include=FALSE, cache=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+library(sf)
+library(rgdal)
+library(tidyverse)
+library(mapview)
+library(pgirmess)
+library(RColorBrewer)
+library(lwgeom)
+library(knitr)
+library(pander)
+library(kableExtra)
+library(leaflet)
+library(lubridate)
+library(gmodels)
+library(ggplot2)
+library(ggthemes)
+library(reshape)
+library(readxl)
+clean_units <- function(x){
+  attr(x,"units") <- NULL
+  class(x) <- setdiff(class(x),"units")
+  x
+}
+fun.i.shannon <- function(x) {
+  freq <- as.data.frame(table(x))
+  Indice <- shannon(freq$Freq, base = 2)[1]
+  Indice
+}
+compte.nb.jour <- function(x, seuil, superieur) {
+  if (superieur == FALSE) {
+    x <- x[x<seuil]
+    res <- length(x)
+    
+  }
+  if (superieur == TRUE) {
+    x <- x[x>seuil]
+    res <- length(x)
+    
+  }
   
+  res
+}
 
+### PARTIE 1 ###
+data.S2.L1C <- readRDS('FILES/data_S2.rds')
+data.S2.L1C$date_acquisition <- as.Date(data.S2.L1C$date_acquisition, "%Y-%m-%d")
+data.S2.L1C$Mois <- month(data.S2.L1C$date_acquisition, label = T, abbr = T)
+data.S2.L1C$An <- year(data.S2.L1C$date_acquisition)
+data.S2.L1C$DM <- floor_date(data.S2.L1C$date_acquisition,"month")
+
+#### PARTIE 2 ###
+epsg <- make_EPSG()
+crs.CC <- epsg %>% dplyr::filter(code==3948)
+crs.wsg <- epsg %>% dplyr::filter(code==4326)
+grille <- st_transform(st_as_sf(readOGR(dsn = 'FILES', 'grille_rennes_250m')), crs.CC$prj4)
+
+arbre.inter <- st_transform(st_as_sf(readOGR(dsn = 'FILES', 'arbre_Rennes')), crs.CC$prj4)
+arbre.iso <- arbre.inter %>% dplyr::filter(iso=="OUI")
+arbre.iso.filter <- arbre.iso %>% dplyr::filter(genre %in% as.character(as.data.frame(sort(table(arbre.iso$genre), decreasing = TRUE)[1:10])[,1]))
+
+grille.div <- st_join(arbre.iso.filter, grille, st_intersects)
+grille.div <- grille.div %>% group_by(id.y) %>% summarise(Ind.sh = fun.i.shannon(genre))
+grille.div <- left_join(grille, as.data.frame(grille.div), by=c("id"="id.y"))
+table.indiv <- as.data.frame(sort(table(arbre.iso$genre),decreasing = T))[1:10,]
+nf <- c("CHENE", "TILLEUL", "ERABLE", "PLATANE", "FRENE", "FEVIER D'AMERIQUE", "PRUNIER", "ROBINIER", "MARRONIER", "CHARME HOUBLON")
+table.indiv$FR <- nf 
+table.indiv <- table.indiv[,c(1,3,2)]
+colnames(table.indiv) <- c("Genre","Nom français", "Nombre d'individu")
+```
+
+
+
+```{r lib, include=FALSE, echo=FALSE}
+library(sf)
+library(rgdal)
+library(tidyverse)
+library(mapview)
+library(pgirmess)
+library(RColorBrewer)
+library(lwgeom)
+library(knitr)
+library(pander)
+library(kableExtra)
+library(leaflet)
+library(lubridate)
+library(gmodels)
+library(ggplot2)
+library(ggthemes)
+library(reshape)
+library(viridis)
+library(extrafont)
+library(readxl)
+library(signal)
+library(plotly)
+
+
+```
+
+L'objectif de cette thèse est de chercher à démontrer l'efficacité et la fiabilité des images Sentinel-2 pour suivre l'état sanitaire de la végétation arborée en milieu urbain. Cette étude s'appuie sur une campagne de mesures terrains qui seront mises en relation avec les images satellites. La zone d'étude s'étend au territoire de Rennes Métropole. Ce document a pour but de présenter les données disponibles sur la zone d'étude ainsi que le programme de la campagne de mesures.
+
+**PLAN DU DOCUMENT**
+
+1/ Présentation données Sentinel-2 sur la zone d'étude
+
+2/ Présentation des données de la végétation arboré sur Rennes
+
+3/ Traitement de série temporelle Sentinel-2
+
+4/ Programme de la campagne de mesures.
+
+
+
+# **1.**  Présentation données Sentinel-2 sur la zone d'étude
+
+Les images Sentinel-2 proviennent d'une constellation de deux satellites identiques : Sentinel-2A et Sentinel-2B, lancés respectivement en 2015 et 2017. Le capteur embarqué sur les satellites (capteur MSI : *MultiSpectral Instrument*) acquiert des images dans 13 bandes spectrales qui permettent de couvrir une large partie du spectre éléctromagnétique (de 400 à 2400 nanomètres, soit du bleu à l'infrarouge moyen). Sa résolution spatiale (dimensions du pixel) est de 10 m x 10 m tandis que sa résolution temporelle (intervalle de temps de revisite d'une même scène) et de 5 jours. 
+
+<https://sentinel.esa.int/web/sentinel/missions/sentinel-2>
+
+
+
+##  L'emprise spatiale
+
+Cette video présente la façon dont la constellation Sentinel-2 acquiert les images.
+
+<video controls>
+  <source src="https://dlmultimedia.esa.int/download/public/videos/2016/08/004/1608_004_AR_EN.mp4" type="video/mp4">
+</video>
+
+Différentes fauchées, sur différentes orbites (on parle d'*orbite relative*) permettent d'assurer la couverture intégrale de la surface terrestre. Les images sont ensuite distribuées selon une division de l'espace géographique appelé *tuilage* qui permet de quadriller les territoires. Deux tuiles permettrent de couvrir l'intégralité des communes de Rennes Métropole : les tuiles **T30UWU** et **T30UXU**. La zone d'étude et de mesure, restreinte à la commune de Rennes, peut être couverte par une seule tuile (voir carte ci-dessous)
+
+Tuile complète **T30UWU** :
+
+```{r map, include=TRUE, echo=FALSE, fig.align='center'}
+
+tuile.large <- data.S2.L1C %>% dplyr::filter(relativeorbit_number==137)
+tuile.fine <- data.S2.L1C %>% dplyr::filter(relativeorbit_number==94)
+mapview(tuile.large$footprint[1])
+
+```
+
+La zone d'étude possède l'avantage d'être survolé par deux orbites relatives (qui disposent d'un taux de recouvrement de 10km de large). Cette spécificité va permettre de disposer de davantages d'images.
+
+Tuile partielle **T30UWU** :
+
+```{r map.bis, include=TRUE, echo=FALSE, fig.align='center'}
+
+mapview(tuile.fine$footprint[1])
+
+```
+
+Selon le numéro d’orbite relative, les images peuvent donc couvrir l’emprise totale de la tuile, ou bien seulement un trapèze, à l’est de la tuile, qui permet toutefois de couvrir entièrement Rennes.
+
+## Nombre d'images disponibles
+
+La constellation Sentinel-2 repose sur deux satellites aux caractéristiques identiques : S2-A et S2-B. Depuis 2018, 146 images sont captées chaque année.
+
+```{r nombre_images, include=FALSE, echo = FALSE}
+tab <- CrossTable(data.S2.L1C$An, data.S2.L1C$platform_serial, digits = 0, 1, F,F,F,F,F,F,F)
+tab.mx <- as.data.frame.matrix(tab$t)
+tab.mx$Total <- tab.mx$`Sentinel-2A` + tab.mx$`Sentinel-2B`
+tab.freq <- as.data.frame(tab$t)
+
+```
+
+```{r print_tab_img, echo = FALSE, fig.align='center'}
+kable(tab.mx, "html") %>% kable_styling("striped") %>% scroll_box(width = "100%")
+ggplot(data=tab.freq, aes(x=x, y=Freq, fill=y)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  labs(title="Nombre d'images acquises ", 
+         x="Année", y = "Nombre d'images")+
+  theme(text=element_text(size=14,  family="Segoe UI Light"), legend.title = element_blank(), legend.position="bottom")+
+  scale_fill_manual(values=c("#CCED00", "#5A5A5A"), labels = c("Sentinel-2A", "Sentinel-2B"))
+
+```
+
+##  Temporalité
+
+```{r temp, include=FALSE, echo=FALSE, cache=TRUE}
+serie.acqu <- data.S2.L1C %>% dplyr::filter(An == 2019 & Mois == 'juin')
+serie.acqu <- serie.acqu %>% select(date_acquisition, relativeorbit_number, platform_serial)
+serie.acqu$relativeorbit_number <- ifelse(serie.acqu$relativeorbit_number==137, 'Tuile entière', 'Tuile partielle')
+```
+
+En ce qui concerne l'organisation temporelle des prises de vue, on peut prendre l'exemple sur un mois. Ici, pour le mois de Juin 2019, on compte 12 images. On peut considérer ces 12 images selon deux critères :
+
+- le satelite ayant réalisé la prise de vue (2A ou 2B). 
+- l'orbite relative, qui correspond au type d'emprise énoncé plus tôt : tuile entière ou tuile partielle.
+
+```{r temp.print, include=TRUE, echo=FALSE, fig.align='center'}
+ggplot(serie.acqu, aes(x=date_acquisition, y=platform_serial)) +
+  geom_point(aes(shape=relativeorbit_number), size=5, color="#5A5A5A")+
+  scale_shape_manual(values=c(15, 17)) +
+  labs(title="Images S2 sur un mois ", 
+       x="Date d'acquisition", y = "Nom du satellite")+
+  theme(text=element_text(size=14,  family="Segoe UI Light"), legend.title = element_blank(), legend.position="bottom")
+
+
+```
+```{r temp.print.tab, include=FALSE, echo=FALSE}
+kable(as.data.frame(serie.acqu)[,c(1:3)], "html") %>% kable_styling(bootstrap_options = "striped", position = 'center') %>% scroll_box(width = "100%")
+
+```
+
+Grâce à la localisation de Rennes (à cheval sur deux fauchées), le nombre d'images disponibles est plus important, comme on peut le voir sur le graphique suivant. Il existe alors un intervalle de 48 heures ou de 72 heures entre deux prises de vue.
+
+
+##  Couverture nuageuse
+Pour analyser la couverture nuageuse des images, on considère uniquement les années complètes, où la constellation était pleinement opérationelle : à partir de 2018. Pour chaque image, on dispose d'informations relatives à la couverture nuageuse. On peut par exemple calculer la couverture nuageuse moyenne et medianne par mois.
+
+```{r CC.data, include=FALSE, echo=FALSE, cache=TRUE}
+data.S2.L1C.full <- data.S2.L1C %>% dplyr::filter(An %in% c(2018, 2019, 2020))
+data.S2.L1C.res <- data.S2.L1C.full %>% group_by(DM) %>% summarise(sum.CC = sum(cloudcov),  mean.CC = mean(cloudcov), med.CC = median(cloudcov))
+theme_set(theme_bw())
+df <-as.data.frame(data.S2.L1C.res)[,-5]
+df.fond <- melt(df, id=c("DM"), measured=c("mean.CC", "med.CC"))
+df.fond <- df.fond %>% dplyr::filter(variable %in% c("med.CC", "mean.CC"))
+# labels and breaks for X axis text
+lbls <- paste0(month.abb[month(df.fond$DM)], " ", lubridate::year(df$DM))
+brks <- df.fond$DM
+data.S2.L1C.res.nb.cc.mois <- data.S2.L1C.full %>% group_by(DM) %>% summarise(nb.im.inf.5CC = compte.nb.jour(cloudcov, 5, FALSE),  nb.im.inf.20CC = compte.nb.jour(cloudcov, 20, FALSE))
+data.S2.L1C.res.nb.cc.mois$nb.im.inf.20CC <- data.S2.L1C.res.nb.cc.mois$nb.im.inf.20CC-data.S2.L1C.res.nb.cc.mois$nb.im.inf.5CC
+
+data.S2.L1C.res.nb.cc.mois <- as.data.frame(data.S2.L1C.res.nb.cc.mois)[,-4]
+data.S2.L1C.res.nb.cc.mois.fond <-melt(data.S2.L1C.res.nb.cc.mois, id=c("DM"), measured=c("nb.im.inf.5CC", "nb.im.inf.20CC"))
+df.fond.2 <- data.S2.L1C.res.nb.cc.mois.fond
+df.fond.2$Mois <- month.abb[month(df.fond$DM)]
+test <- df.fond.2 %>% dplyr::filter(variable == 'nb.im.inf.20CC') %>% group_by(Mois) %>% summarise(Moy.nb.20CC = mean(value))
+test <- df.fond.2 %>% group_by(Mois, variable) %>% summarise(nb.jour = mean(value))
+test$Mois <- factor(test$Mois, month.abb)
+
+test <- sort_df(test)
+test$variable <- ifelse(test$variable=="nb.im.inf.5CC", "5", "20")
+```
+
+La couverture nuageuse moyenne mensuelle (Graphique 1) peut beaucoup varier au fil d'une année, avec par exemple 75% de couverture nuageuse moyenne au mois de Janvier 2018 mais seulement 25% au mois d'Août de la même année. D'autre part, les profils annuels présentent également des dissimilarités avec par exemple un printemps et un été assez couvert en 2020 contrairement aux autres années
+```{r CC.graph, include=TRUE, echo=FALSE, warning=FALSE, fig.width=9,fig.height=7, fig.align='center'}
+ggplot(df.fond, aes(x=DM, y=value, color=variable)) + 
+  stat_smooth(method = "loess", formula = y ~ x, size = 1.8, span = 0.25, se=F) + 
+  labs(title=" 1 ) Couverture nuageuse des images Sentinel-2", 
+       subtitle="Moyenne et médianne par mois", 
+       y="Couverture nuageuse en %", x="Date") +  # title and caption
+  scale_x_date(labels = lbls, 
+               breaks = brks) +  # change to monthly ticks and labels
+  theme(axis.text.x = element_text(angle = 45, vjust=0.5, size = 10), legend.title = element_blank(), legend.position="bottom", text=element_text(size=14,  family="Segoe UI Light"))+
+  scale_color_manual(values=c("#CCED00", "#5A5A5A"), labels = c("% Moyen ", "% Médian"))
+
+
+
+
+ggplot(df.fond.2, aes(x=DM, y=value, fill=variable)) + 
+  geom_bar(stat = "identity") + 
+  labs(title=" 2) Nombre de jours avec une couverture nuageuse optimale", 
+       subtitle=" Pourentage de nuage inférieur à 5%, puis à 20% (entre 5 et 20%)", 
+       y="Nombre de jours") +  # title and caption
+  scale_x_date(labels = lbls,breaks = brks) +
+  scale_y_continuous(breaks=c(1:11))+
+  scale_fill_manual(values=c("#CCED00", "#5A5A5A"), labels = c("Inférieur à 20% ", "Inférieur à 5%"))+
+  theme(axis.text.x = element_text(angle = 45, vjust=0.5),  # rotate x axis text
+        panel.grid.minor = element_blank(),text=element_text(size=14,  family="Segoe UI Light"),legend.title = element_blank(), legend.position="bottom")  # turn off minor grid
+
+
+p <- ggplot(test, aes(x = Mois, y = nb.jour, fill = variable))+
+  geom_bar(stat="identity", width = 0.7)+
+  labs(title=" 3 ) Nombre moyen d'image par mois - Periode 2018-2020",y="Nombre d'images", x="Date")+
+  theme(legend.title = element_blank(), legend.position="bottom", text=element_text(size=14,  family="Segoe UI Light"))+
+  scale_fill_manual(values=c("#CCED00", "#5A5A5A"), labels = c("Inférieur à 20% ", "Inférieur à 5%"))
+
+p
+
+```
+
+Sur le graphique 2, on peut voir que le nombre d'images utilisables par mois (ayant un taux de couverture nuageuse inférieure à 5%, ou à 20%) peut beaucoup varier selon l'année. Cependant, sur l'ensemble de la période, on peut estimer pouvoir disposer de 2 images (ayant un taux et couverture nuageuse inférieur à 20%) par mois (graphique 3), ce qui permet de constituer une série temporelle afin de suivre les différents stade phénologiques.
+     
+     
+     
+     
+# **2.** Présentation des données de la végétation arborée sur Rennes
+
+                                             
+Les arbres à suivre doivent correspondre à plusieurs critères : 
+
+- La superficie de la couronne doit être suffisamment importante pour pouvoir être couverte et interprétée grâce aux images S2 (résolution 10m x 10m).
+- La forme de la couronne doit être le plus circulaire possible
+- On exclut également les espèces de conifères, en raison de la couverture de la canopé difficile à considérer à l'échelle des images satellites, les mesures de chlorophylle, pigments, etc... nécéssite également davantages d'investissement.
+
+L'OpenData de Rennes Métropole dispose de deux couches de données (Directions des jardins et de la biodiversité) : 
+
+- Les arbres d'alignements (23616 individus)
+- Les arbres d'ornements (68860 individus)
+
+Ces données disposent notamment d'informations sur l'espèces selon la hiérarchie suivante (34818 individus) : 
+
+- Genre > Espèce > Variété
+
+On peut tout d'abord considérer uniquement les arbres pour lesquels ces informartions sont renseignées.
+On réalise un tampon (**5 mètres**) sur la base des arbres RM (ponctuel). Si ce tampon s'intersecte à plus de **95%** avec la couche surfacique de VFRM ( *Végétation fine Rennes Métropole* de Kermap), on considère alors que l'emprise de l'arbre est suffisament importante.
+
+Ensuite, on cherche à savoir si l'arbre est isolé, ici, on considère qu'il est isolé si aucun autre arbre ne se trouve dans un tampon de **2 mètres** atours de lui. 
+
+
+Ces deux paramètres peuvent être réévalués en fonction des résultats
+
+### Carte n°1
+
+Sur cette carte sont représentés les 8884 arbres filtrés suivant la méthode précédemment citée, avec la distinction : arbre isolé / non isolé
+
+```{r map1, include=TRUE, echo=FALSE, warning=FALSE}
+
+pal <- colorFactor(c("#ee7437", "#25790f"), domain = c("OUI", "NON"))
+
+
+m <- leaflet(st_centroid(st_transform(arbre.inter, crs=crs.wsg$prj4))) %>% setView(lng = -1.67, lat = 48.11, zoom = 12) %>% 
+  addProviderTiles(providers$CartoDB.Positron, group = 'CartoDB.Positron') %>% 
+  addProviderTiles(providers$Esri.WorldImagery, group='Esri.WorldImagery') %>% 
+  addLayersControl(baseGroups = c('CartoDB.Positron', 'Esri.WorldImagery')) %>% 
+  addCircleMarkers(
+    radius = 3,
+    color = ~pal(iso),
+    stroke = FALSE, fillOpacity = 0.5) %>%
+  addLegend("bottomright", pal = pal, values = ~iso,
+            title = "Arbre isolé",
+            opacity = 1)
+m
+```
+  
+    
+### Carte n°2
+
+A partir des arbres isolés, on peut séléctionner les espèces dominantes, ici les 10 espèces pour lesquelles on dispose de plus de 20 individus. Cette carte rassemble 937 individus qui répondent aux critère.
+
+
+
+```{r map2, include=TRUE, echo=FALSE, warning=FALSE}
+
+kable(table.indiv, "html") %>% scroll_box(width = "50%") %>% kable_styling(bootstrap_options = "striped", position = 'center') 
+
+
+arbre.ok <- st_centroid(st_transform(arbre.iso.filter, crs=crs.wsg$prj4))
+
+arbre.ok$genre = droplevels(arbre.ok$genre)
+arbre.ok$genre = as.character(arbre.ok$genre)
+
+arbre.split <- split(arbre.ok, arbre.ok$genre)
+pal <- colorFactor(palette = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a'), 
+                   levels = unique(arbre.ok$genre))
+
+m <- leaflet() %>% 
+  setView(lng = -1.67, lat = 48.11, zoom = 13) %>% 
+  addProviderTiles(providers$CartoDB.Positron, group = 'Fond de plan') %>% 
+  addProviderTiles(providers$Esri.WorldImagery, group='Image aérienne')
+for (layer in arbre.split) {
+  m <- m %>%
+    addCircleMarkers(data = layer,
+                     radius = 4,
+                     color = ~pal(genre),
+                     stroke = FALSE, 
+                     fillOpacity = 0.9, 
+                     group = unique(layer$genre))
+  
+}
+  
+m <- m %>% 
+  addLayersControl(baseGroups = c('Fond de plan', 'Image aérienne'), 
+                   overlayGroups = c(as.character(unique(arbre.ok$genre))), 
+                   options = layersControlOptions(collapsed = FALSE)) %>%
+  addLegend("bottomleft", 
+            colors = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a'),
+            labels = c(as.character(unique(arbre.ok$genre))),
+            opacity = c(0.8, 0.6))
+m 
+
+```
+*La carte ci-dessus est une carte interactive, il est possible de sélectionner les espèces à afficher et de changer le fond de carte*
+    
+### Carte n°3
+
+Pour orienter une zone de recherche, on peut considérer un quadrillage de 250m x 250m. Pour chacune de ces cellules, on calcul l'indice de Shannon des espèces présentent dans la cellule. Cet indice représente la diversité des espcèces présentes dans un espace donné (il est important de rappeler que seuls les arbres isolés et dont on dispose d'informations sur l'espèce sont considérés ici). 
+
+
+```{r map3, include=TRUE, echo=FALSE, warning=FALSE}
+
+bins <- c(0, 0.5, 1, 1.5, 2)
+pal <- colorBin(viridis_pal(option = "C")(4), domain = grille.div$Ind.sh, bins = bins)
+
+
+m <- leaflet(st_transform(grille.div %>% dplyr::filter(!is.na(Ind.sh)), crs=crs.wsg$prj4)) %>% setView(lng = -1.67, lat = 48.11, zoom = 13) %>% 
+  addProviderTiles(providers$CartoDB.Positron, group = 'CartoDB.Positron') %>% 
+  addProviderTiles(providers$Esri.WorldImagery, group='Esri.WorldImagery') %>% 
+  addLayersControl(baseGroups = c('CartoDB.Positron', 'Esri.WorldImagery')) %>%
+  addPolygons(
+    fillColor = ~pal(Ind.sh),
+    weight = 0.2,
+    opacity = 0.1,
+    color = "white",
+    dashArray = "3",
+    fillOpacity = 0.8) %>%
+  addLegend("bottomright", pal = pal, values = ~Ind.sh,
+            title = "Indice de Shannon",
+            opacity = 1)
+m
+
+```
+
+# **3.**  Exemple de série temporelle Sentinel-2 pour l'année 2020
+
+
+Les données Sentinel-2 disponibles sur Rennes ont permis de constituer une série temporelle de NDVI (indice de végétation). La répartition temporelle des 33 dates est la suivante : 
+
+```{r graph.date.S2, include=TRUE, echo=FALSE, warning=FALSE, fig.align='center'}
+
+
+list.date <- readRDS('FILES/liste_dates.rds')
+df.agg.genre <- read_excel("FILES/extract_ndvi_Rennes_Genre_2020.xlsx")
+df.agg.eau <- read_excel("FILES/extract_ndvi_Rennes_Eau_2020.xlsx")
+df.agg.imp <- read_excel("FILES/extract_ndvi_Rennes_Imp_2020.xlsx")
+
+## Fréquence date
+tab.date <- as.data.frame(as.Date(list.date, "%Y%m%d"))
+tab.date$Mois <- month(tab.date$`as.Date(list.date, "%Y%m%d")`, label= TRUE, abbr = TRUE)
+tab.date <- as.data.frame(table(tab.date$Mois))
+
+p <- ggplot(tab.date, aes(x = Var1, y = Freq)) + 
+  geom_bar(stat = "identity", color = "#5A5A5A", fill = "#CCED00") +
+  labs(title = "Nombre d'images par Mois - Année 2020\n", x = "\nMois", y = "Nombre de date\n") +
+  theme(legend.title = element_blank(), legend.position="bottom", text=element_text(size=14,  family="Segoe UI Light"))
+ggplotly(p)
+```
+
+On peut extraire les valeurs de NDVI pour tout les arbres sélectionnés. On peut également introduire davantage de critères pour discriminer les arbres (en plus du genre) : 
+
+* Distance à l'eau (à partir de la couche *natural > water* d'OSM) que l'on peut catégoriser en 3 classes : 
+  * Distance inférieure à 15 mètres
+  * Distance inférieure à 50 mètres (entre 15 et 50 mètres)
+  * Distance supérieure à 50 mètres
+* Pourcentage de la surface imperméable (dans les 50 mètres autours de l'arbre, cette valeur n'est pas pondérée par la distance à l'arbre) : 
+  * Inférieure à 15 %
+  * Entre 15 % et 50 %
+  * Supérieure à 50 %
+  
+On peut donc présenter plusieurs séries temporelles selon ces différents critères. 
+
+Pour rendre lisible les représentations, on applique deux types de régression : filtre de Savitzky-Golay, regression locale (LOESS)
+
+```{r graph.NDVI, include=TRUE, echo=FALSE, warning=FALSE, fig.align='center'}
+
+# Genre - Reg SG
+p3 <- ggplot(df.agg.genre, aes(x=date, sgolayfilt(df.agg.genre$mean.ndvi, p=3, n=11, m=0, ts=1))) +
+  geom_line() +
+  facet_wrap(. ~ genre, ncol = 3) +
+  labs(title = "Série temporelle NDIV - Régression SG", subtitle = "Par genre" ,x = "Jour de l'année", y = "NDVI") +
+  theme(legend.title = element_blank(), legend.position="bottom", text=element_text(size=12,  family="Segoe UI Light"))
+p3
+p3.ly <- ggplotly(p3)
+p3.ly
+
+# Genre - Reg LOESS
+p3 <- ggplot(df.agg.genre, aes(x=date, y=mean.ndvi)) +
+  stat_smooth(method = "loess", se=FALSE, formula = y ~ x, size = 1, span = 0.32)+
+  facet_wrap(. ~ genre, ncol = 3) +
+  labs(title = "Série temporelle NDIV - Régression LOESS", subtitle = "Par genre" ,x = "Jour de l'année", y = "NDVI") +
+  theme(legend.title = element_blank(), legend.position="bottom", text=element_text(size=12,  family="Segoe UI Light"))
+p3
+p3.ly <- ggplotly(p3)
+p3.ly
+
+p3 <- ggplot(df.agg.genre, aes(x=date, y=mean.ndvi, colour=genre, group=genre)) +
+  stat_smooth(method = "loess", se=FALSE, formula = y ~ x, size = 1, span = 0.32)+
+  labs(title = "Série temporelle NDIV - Régression LOESS", subtitle = "Par genre" ,x = "Jour de l'année", y = "NDVI") +
+  scale_color_manual(values=c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a'))+
+  theme(legend.title = element_blank(), legend.position="bottom", text=element_text(size=12,  family="Segoe UI Light"))
+ 
+p3.ly <- ggplotly(p3)
+p3.ly
+
+# EAU - Reg SG
+p3 <- ggplot(df.agg.eau, aes(x=date, sgolayfilt(df.agg.eau$mean.ndvi, p=3, n=11, m=0, ts=1))) +
+  geom_line() +
+  facet_grid(P.EAU ~ .) +
+  labs(title = "Série temporelle NDIV - Régression SG", subtitle = "Selon la distance à l'eau" ,x = "Jour de l'année", y = "NDVI") +
+  theme(legend.title = element_blank(), legend.position="bottom", text=element_text(size=12,  family="Segoe UI Light"))
+p3
+p3.ly <- ggplotly(p3)
+p3.ly
+
+# EAU - Reg LOESS
+p3 <- ggplot(df.agg.eau, aes(x=date, y=mean.ndvi, colour=P.EAU, group=P.EAU)) +
+  stat_smooth(method = "loess", se=FALSE, formula = y ~ x, size = 1, span = 0.32)+
+  labs(title = "Série temporelle NDIV - Régression LOESS", subtitle = "Selon la distance à l'eau" ,x = "Jour de l'année", y = "NDVI") +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  theme(legend.title = element_blank(), legend.position="bottom", text=element_text(size=12,  family="Segoe UI Light"))
+p3
+p3.ly <- ggplotly(p3)
+p3.ly
+
+# IMP - Reg SG
+p3 <- ggplot(df.agg.imp, aes(x=date, sgolayfilt(df.agg.imp$mean.ndvi, p=3, n=11, m=0, ts=1))) +
+  geom_line() +
+  facet_grid(C.IMP ~ .) +
+  labs(title = "Série temporelle NDIV - Régression SG", subtitle = "Selon le pourcentage de surface imperméable aux alentours de l'arbre" ,x = "Jour de l'année", y = "NDVI") +
+  theme(legend.title = element_blank(), legend.position="bottom", text=element_text(size=12,  family="Segoe UI Light"))
+p3
+p3.ly <- ggplotly(p3)
+p3.ly
+
+p3 <- ggplot(df.agg.imp, aes(x=date, y=mean.ndvi, colour=C.IMP, group=C.IMP)) +
+  stat_smooth(method = "loess", se=FALSE, formula = y ~ x, size = 1, span = 0.32)+
+  labs(title = "Série temporelle NDIV - Régression LOESS", subtitle = "Selon le pourcentage de surface imperméable aux alentours de l'arbre" ,x = "Jour de l'année", y = "NDVI") +
+  scale_color_viridis(discrete = TRUE, option = "D")+
+  theme(legend.title = element_blank(), legend.position="bottom", text=element_text(size=12,  family="Segoe UI Light"))
+p3
+p3.ly <- ggplotly(p3)
+p3.ly
+
+
+```
+Bien qu'il soient difficile d'emmetre des conclusions sur la base de ces graphiques, on montre ici que le signal Sentinel-2 permet d'interpreter des différences. Ces différences dans le signal sont notamment percéptibles entre espèces. Les autres variables, notamment le pourcentage d'imperméabilisation, on peut identifier un biais. Pour un arbre planté sur une pelouse par exemple (faible pourcentage de surface imperméable), le signal Sentinel-2 va interpéter la signature spectrale de l'arbre, mais également de la végétation (pelouse) contenue dans le même pixel, de ce fait, l'indice de végétation sera plus important. La différence affichée est donc davantage lié à la mesure en tant que telle plutôt qu'à l'impact réelle du pourcentage de surface imperméable aux alentours de l'arbre sur son développement.
+
+# **4.**  Programme des relevés terrain
+
+Les relevés terrain doivent être réalisés de Mars à Août/Septembre, de façon à couvrir les principaux stades phénologiques : de la croissance jusqu'à la sénéscence. Cette campagne de mesure est composée de deux protocoles distincts :
+
+- Le premier protocole consiste à récolter un jeu de données avec une fréquence temporelle elevée, de façon à constituer une série temporelle robuste s'appuyant sur un grand nombre de variable. Avec ces données, on cherche à comprendre les dynamiques temporelles à fine échelle (temporelle). Ce protocole est voué à être perpétué et les variables mesurée doivent pouvoir orienter un volet opérationel dans la gestion de la végétation arborée.
+- Le second protocole de relevés repose sur des mesures plus contraignantes à mettre en place. Il pourra avoir lieu à certaines dates à déterminer (4/5 fois sur la période). L'objectif ici est de comprendre les processus physico-chimique à l'oeuvre à l'échelle de l'arbre. Ces données serviront à modéliser et à simuler la réfléctance des arbres grâce au modèle DART (<https://dart.omp.eu/#/>). 
+
+<center><img src="c:/Users/arvor_d/Desktop/THESE/logo_dart.png"></center>
+
+Ces protocoles de mesures pourraient être réalisés conjointement avec les équipes de la direction des jardins et de la biodiversité de la ville de Rennes.
+
+Afin de discuter de la pertinence et de la faisabilité des protocoles par les agents de la métropole. 
+
+### Description des relevés : **Protocole n°1**
+
+ 
+Le premier protocole doit coïncider avec les prises de vue de Sentinel-2. En complément, une couverture aéroporté (via la plateforme PIMA <https://www.ietr.fr/spip.php?article1483#close>) ou drone (via la plateforme D2T <https://osur.univ-rennes1.fr/news/creation-de-la-plateforme-drone-d2t.html>).
+
+Ces données viendront en complément des images Sentinel-2 de façon à assurer une continuité haute résolution et mieux interpréter le signal Sentinel-2 mais aussi pour acquerir une série d'images qui assure la viabilité de la thèse en cas de déficit d'images Sentinel-2 (couverture nuageuse trop importante, défaut du capteur, etc...). 
+
+Ce protocole devra avoir lieu tout les 7-8 jours de Mars à Septembre. Lors de ces journées, les mesures suivantes seront réalisées : 
+
+* Mesure du LAI : 
+  * avec LAI-2200, nécessite 2 appareils, et certaines contraintes de mesures, mais semble être la meilleur alternative au TLS selon la littérature (<https://doi.org/10.1016/j.agrformet.2020.108101>).
+  * A defaut, la mesure peut-être effectuée au FishEye, cependant, cette technologie semble peu adapté au contexte d'arbre isolé en milieu urbain.
+* Mesure de chlorophyle et pigmentaire :
+  * en mesure direct (non destructive) avec des appareils dédiés (SPAD, DUALEX), ce type de mesure peut-être difficile à calibrer, d'autant plus que différentes espèces seront mesurées.
+  * en mesure indirecte (destructive), qui nécessite une récolte d'échantillons (feuilles) sur chaque individus, ces échantillons seront ensuite analysés au laboratoire ECOBIO (Rennes 1) via la plateforme ECO-CHIM
+* Teneur en eau, en matière sèche. 
+  * Ces mesures peuvent être effectuées en laboratoire à partir des échantillons. Nous somme actuellement en échange avec le laboratoire ECOBIO pour mettre au point ce protocole.
+
+
+Ce protocole doit pouvoir être réalisé idéalement en une journée (en deux jours maximum) d'un point de vue logistique et humain. Le nombre d'arbre et leur localisation doivent donc être adaptés aux questions scientifiques mais également à la faisabilité du protocole.
+
+### Description des relevés : **Protocole n°2**
+
+Le protocole n°2 est densifié, il est davantage axé sur des mesures plus précises, mais qui nécéssitent un investissement logistique plus important. Ces mesures seront effectuées sur un nombre d'individu très restreint.
+
+* Mesure du LAI. 
+  * Mesure effectuée au Lidar terrestre (laboratoire GEOSCIENCE RENNES 1)
+  
+* Mesure de chlorophyle et pigmentaire : effectuées de la même façon que pour le premier protocole.
+
+* Teneur en eau, en matière sèche : : effectuées de la même façon que pour le premier protocole.
+
+* Mesures thermiques. Caméra thermique FLIR. Nécéssite une nacelle pour pouvoir accéder à la partie supérieure de l'arbre.
+
+* Spectroscopie, à partir d'un spectromètre. Nécéssite une nacelle pour pouvoir accéder à la partie supérieure de l'arbre.

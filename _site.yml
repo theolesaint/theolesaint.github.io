@@ -1,6 +1,6 @@
 name: "R Markdown Websites Tutorial"
 navbar:
-  title: "HOME"
+  title: "Acceuil"
   left:
     - text: "First Observations"
       href: first_observations.html
