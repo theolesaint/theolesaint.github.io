@@ -12,7 +12,7 @@ navbar:
       href: your_turn.html
   right:
     - icon: fa-heart fa-lg
-      href: https://theolesaint.github.io/poubelle/
+      href: 
   
 output_dir: "."
 output:
